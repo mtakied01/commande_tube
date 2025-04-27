@@ -52,12 +52,6 @@ class CommandController extends Controller
             ]);
         }
 
-        //   $table->uuid('id')->primary();
-        //   $table->string('barcode')->unique();
-        //   $table->foreignId('command_by')->nullable()->constrained('users', 'id');
-        //   $table->string('status')->default('en_attente');
-        //   $table->timestamps();
-
         return response()->json(['status' => 'accepted', 'message' => 'hello']);
     }
 

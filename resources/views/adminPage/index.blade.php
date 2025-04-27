@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 @section('title','Produits')
 @section('content')
   <div class="max-w-7xl mx-auto p-6">
@@ -27,22 +27,15 @@
               <td class="px-4 py-3">{{ $product->created_at->format('d/m/Y') }}</td>
               <td class="px-4 py-3">{{ $product->updated_at->format('d/m/Y') }}</td>
               <td class="px-4 py-3">
-                <a href="{{ route('products.edit', $product->id) }}" class="text-blue-600 hover:underline">Modifier</a>
-                <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="inline-block ml-2">
+                <form action="{{ route('admin.destroy', $product->id) }}" method="POST" class="inline-block ml-2">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="text-red-600 hover:underline"
-                    onclick="return confirm('Supprimer ce produit ?')">Supprimer</button>
+                  <input type="submit" class="text-red-600 hover:underline"
+                    value="Supprimer" />
                 </form>
               </td>
             </tr>
           @endforeach
-
-          @if ($products->isEmpty())
-            <tr>
-              <td colspan="7" class="px-4 py-6 text-center text-gray-500">Aucun produit trouvé.</td>
-            </tr>
-          @endif
         </tbody>
       </table>
       <div class="mt-4">

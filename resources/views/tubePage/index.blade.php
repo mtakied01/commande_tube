@@ -160,7 +160,7 @@
             console.log('Réponse serveur:', response);
           })
           .catch(error => {
-            console.error('Erreur lors de l\'envoi:', error);
+            console.error( error);
           });
 
 
