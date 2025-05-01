@@ -14,7 +14,6 @@ return new class extends Migration {
     Schema::create('users', function (Blueprint $table) {
       $table->id();
       $table->bigInteger('matricule');
-      $table->string('name');
       $table->string('role')->default('polyvalent');
       $table->timestamps();
     });
@@ -43,7 +42,7 @@ return new class extends Migration {
       $table->string('statut');
       $table->integer('retard');
       $table->text('description');
-      $table->timestamp('updated_at')->useCurrent();
+      $table->timestamps();
     
       $table->primary(['serial_cmd', 'tube_id']);
       $table->foreign('serial_cmd')->references('barcode')->on('commandes');
@@ -60,6 +59,17 @@ return new class extends Migration {
       $table->foreign('tube_id')->references('id')->on('tubes');
     });
 
+    Schema::create('validations', function (Blueprint $table) {
+      $table->id();
+      $table->string('commande_id');
+      $table->foreign('commande_id')->references('barcode')->on('commandes')->onDelete('cascade');
+      $table->unsignedBigInteger('tube_id');
+      $table->foreign('tube_id')->references('id')->on('tubes')->onDelete('cascade');
+      $table->string('serial_product')->unique();
+      $table->timestamp('validated_at')->nullable();
+      $table->timestamps();
+  });
+
   }
 
   /**
@@ -67,9 +77,10 @@ return new class extends Migration {
    */
   public function down(): void
   {
+    Schema::dropIfExists('validations');
     Schema::dropIfExists('emplacement_tube');
     Schema::dropIfExists('ligne_commande');
-    Schema::dropIfExists('commande');
+    Schema::dropIfExists('commandes');
     Schema::dropIfExists('tubes');
     Schema::dropIfExists('users');
   }

@@ -6,30 +6,31 @@ use Illuminate\Database\Eloquent\Model;
 
 class LigneCommande extends Model
 {
-  public $timestamps = false;
   protected $table = 'ligne_commande';
 
-  // protected $fillable = [
-  //   'serial_cmd',
-  //   'tube_id',
-  //   'quantity',
-  //   'location',
-  //   'statut',
-  //   'retard',
-  //   'description'
-  // ];
 
   protected $guarded = [];
 
+  // public function tube()
+  // {
+  //   return $this->belongsToMany(Tube::class);
+  // }
+
   public function tube()
   {
-    return $this->belongsTo(Tube::class);
+    return $this->belongsTo(Tube::class, 'tube_id');
   }
 
-
-  public function commande()
+  public function validation()
   {
-    return $this->belongsTo(Commande::class, 'serial_cmd', 'barcode');
+    return $this->hasMany(Validation::class, 'serial_cmd', 'commande_id')
+      ->whereColumn('tube_id', 'ligne_commande.tube_id');
   }
+
+
+  // public function commande()
+  // {
+  //   return $this->belongsToMany(Commande::class, 'serial_cmd', 'barcode');
+  // }
 }
 

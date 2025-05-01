@@ -4,70 +4,71 @@ namespace App\Http\Controllers;
 
 use App\Models\commande;
 use App\Models\LigneCommande;
+use App\Models\tube;
 use Illuminate\Http\Request;
 
 class LogisticController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   */
+
   public function index()
   {
     $commande = commande::all();
-    $orders = LigneCommande::with(['tube','commande'])->orderBy('description','desc')->orderBy('updated_at')->get();
-
+    $orders = LigneCommande::whereIn('statut', ['en attente','partial'])
+      ->orderBy('description', 'desc')
+      ->orderBy('updated_at')
+      ->get();
 
     // $orders[0]->commande();
 
-    return view('logisticPage.index', compact('orders', 'commande'));
-    // return dd($orders);
+    $serials = $commande->pluck('barcode');
+
+    return view('logisticPage.index', compact('orders', 'serials'));
+    // return dd($serials);
   }
 
-  /**
-   * Show the form for creating a new resource.
-   */
+
   public function create()
   {
     //
   }
 
-  /**
-   * Store a newly created resource in storage.
-   */
+
   public function store(Request $request)
   {
     //
   }
 
-  /**
-   * Display the specified resource.
-   */
+
   public function show(string $id)
   {
     //
   }
 
-  /**
-   * Show the form for editing the specified resource.
-   */
+
   public function edit(string $id)
   {
     //
   }
 
-  /**
-   * Update the specified resource in storage.
-   */
+
   public function update(Request $request, string $id)
   {
-    //
+
+    $cmd = $request->input('serial_cmd');
+
+    LigneCommande::where('serial_cmd', $cmd)->where('tube_id', tube::where('dpn', $id)->first()->id)->update(['statut' => 'livrée']);
+
+    return response()->json(['message' => 'done']);
+    // return dd($cmd);
   }
 
-  /**
-   * Remove the specified resource from storage.
-   */
+
   public function destroy(string $id)
   {
-    //
+    LigneCommande::where('serial_cmd', commande::orderBy('created_at', 'desc')->first()->barcode)->where('tube_id', tube::where('dpn', $id)->first()->id)->delete();
+
+    return response()->json(['message' => 'done']);
+    // return dd(LigneCommande::where('serial_cmd', commande::orderBy('created_at', 'desc')->first()->barcode)->where('tube_id', tube::where('dpn', $id)->first()->id)->delete());
   }
+
 }

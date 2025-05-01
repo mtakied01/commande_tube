@@ -24,8 +24,18 @@ class commande extends Model
   public function tubes()
   {
     return $this->belongsToMany(Tube::class, 'ligne_commande', 'serial_cmd', 'tube_id')
-      ->withPivot(['quantity', 'location', 'statut', 'retard', 'description', 'updated_at']);
+      ->withPivot(['quantity', 'statut', 'retard', 'description', 'updated_at','created_at']);
   }
+
+  public function user()
+  {
+    return $this->belongsTo(User::class, 'command_by');
+  }
+
+  public function validations()
+{
+    return $this->hasMany(Validation::class);
+}
 
   public static function generateSerial(): string
   {

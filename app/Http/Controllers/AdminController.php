@@ -4,17 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\tube;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = tube::paginate(13);
-        return view('adminPage.index', compact('products'));
+        if (auth()->check() && auth()->user()->role === 'admin') {
+            $products = Tube::paginate(13);
+            return view('adminPage.index', compact('products'));
+        }
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -51,7 +62,7 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,tube $product)
+    public function update(Request $request, tube $product)
     {
         // 
     }
