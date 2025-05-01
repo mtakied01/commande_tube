@@ -24,7 +24,11 @@ class CommandController extends Controller
      */
     public function create()
     {
-        //
+        $orders = LigneCommande::whereIn('statut', ['en attente', 'partial'])
+            ->orderBy('description', 'desc')
+            ->orderBy('updated_at')
+            ->get();
+        return view('tubePage.validate',compact('orders'));
     }
 
     /**

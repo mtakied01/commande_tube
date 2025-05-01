@@ -2,8 +2,9 @@
 
 @section('title', 'Tube Area')
 @section('dark', 'bg-black/60')
-@section('content')
-  <div class="bg-gray-900 text-white py-4 px-6 rounded-t-md flex justify-center gap-8 text-lg font-semibold uppercase">
+
+@section('secondaryMenu')
+  <div class="bg-gray-900 text-white py-4 px-6 rounded-t-md flex justify-center gap-8 text-lg font-semibold uppercase max-sm:flex-col max-sm:items-center">
     <a href="{{ route('tube.index') }}"
       class="hover:text-amber-400 {{ request()->routeIs('tube.index') ? 'text-amber-400 underline' : '' }}">
       Créer une commande
@@ -13,6 +14,9 @@
       Confirmer une commande
     </a>
   </div>
+@endsection
+
+@section('content')
 
   <div class="bg-black/30 px-5 pb-20 pt-10 rounded">
     <div class="absolute bg-amber-700/50 -z-10 inset-0 bg-cover bg-center">

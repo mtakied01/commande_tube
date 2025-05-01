@@ -18,11 +18,12 @@ class AdminController extends Controller
             return view('adminPage.index', compact('products'));
         }
 
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // Auth::logout();
+        // $request->session()->invalidate();
+        // $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        // return redirect()->route('login');
+        return abort(401);
     }
 
 

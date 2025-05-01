@@ -98,7 +98,7 @@
       <div class="container mx-auto flex justify-between items-center">
         <div class="flex items-center">
           <span class="w-4 h-4 bg-[#f84018] rounded-full"></span>
-          <a href="{{ route('login') }}" class="text-6xl max-sm:text-lg font-extrabold tracking-widest">APTIV</a>
+          <a href="{{ route('home') }}" class="text-6xl max-sm:text-lg font-extrabold tracking-widest">APTIV</a>
           <span class="w-4 h-4 bg-[#f84018] rounded-full"></span>
         </div>
 
@@ -111,9 +111,15 @@
           </svg>
         </button>
 
-        @auth
-          <ul class="hidden sm:flex gap-6 text-sm sm:text-base">
-            @yield('lg_menu')
+        <ul class="hidden sm:flex gap-6 text-sm sm:text-base">
+          @yield('lg_menu')
+          <li>
+            <a href="{{ route('tube.index') }}">Tube</a>
+          </li>
+          <li>
+            <a href="{{ route('logistic.index') }}">Logistic</a>
+          </li>
+          @auth
             <li>
               <form method="POST" action="{{ route('logout') }}" class="text-red-500 hover:text-red-700">
                 @csrf
@@ -127,6 +133,12 @@
       <div class="sm:hidden mt-2" x-show="open" @click.away="open = false">
         <ul class="flex flex-col gap-2">
           @yield('sm_menu')
+          <li class="block px-4 py-2">
+            <a href="{{ route('tube.index') }}">Tube</a>
+          </li>
+          <li class="block px-4 py-2">
+            <a href="{{ route('logistic.index') }}">Logistic</a>
+          </li>
           <li>
             <form method="POST" action="{{ route('logout') }}" class="text-red-500 block px-4 py-2 hover:text-red-700">
               @csrf
@@ -136,18 +148,19 @@
         </ul>
       </div>
     </nav>
+    @yield('secondaryMenu')
 
     @section('header')
-    <div class="scroll-wrapper w-full h-32 overflow-hidden relative flex gap-4 items-center my-10">
-      <div class="scroll-text text-orange-300 text-6xl font-bold outlined-text absolute cursor-default"
-        style="font-family: 'Cascadia Code', monospace;">RM ORDERING OF LEAD PREP AREA</div>
-      <div class="scroll-text text-orange-300 text-6xl font-bold outlined-text absolute"
-        style="font-family: 'Cascadia Code', monospace;">RM ORDERING OF LEAD PREP AREA</div>
-    </div>
+      <div class="scroll-wrapper w-full h-32 overflow-hidden relative flex gap-4 items-center my-10">
+        <div class="scroll-text text-orange-300 text-6xl font-bold outlined-text absolute cursor-default"
+          style="font-family: 'Cascadia Code', monospace;">RM ORDERING OF LEAD PREP AREA</div>
+        <div class="scroll-text text-orange-300 text-6xl font-bold outlined-text absolute"
+          style="font-family: 'Cascadia Code', monospace;">RM ORDERING OF LEAD PREP AREA</div>
+      </div>
     @show
 
 
-    <main class="container mx-auto flex-grow px-4 sm:px-6 lg:px-8 py-8">
+    <main class="container mx-auto flex-grow px-4 sm:px-6 lg:px-1 py-8">
       @yield('content')
     </main>
 

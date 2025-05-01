@@ -13,13 +13,15 @@ class testController extends Controller
 {
 
 
-    public function check(Request $request){
-        $res = DB::table('tubes')->where('dpn',$request->value)->exists();
-        return response()->json(['exist'=>$res]);
+    public function check(Request $request)
+    {
+        $res = DB::table('tubes')->where('dpn', $request->value)->exists();
+        return response()->json(['exist' => $res]);
     }
 
 
-    function test() {
+    function test()
+    {
 
         // $t = tube::find(1)->commandes()->get();
 
@@ -35,11 +37,11 @@ class testController extends Controller
         // $c = commande::all()->first()->tubes()->get()->first()->pivot;
         // $retard = Carbon::parse($c->updated_at)->diffInSeconds(now());
         // $t = $c->update(['retard'=>$retard]);
-        
+
         // $c = commande::all()->first()->tubes()->get()->first()->pivot;
         // $retard = Carbon::parse($c->updated_at)->diffInSeconds(now());
         // $t = $c->update(['retard'=>$retard]);
-        
+
 
         // $c = commande::first();
         // $t = $c->tubes()->first();
@@ -48,11 +50,26 @@ class testController extends Controller
         // $res = $c->tubes()->updateExistingPivot($t->id,['retard' => $retard+$t->pivot->retard]);
 
 
-        $t = tube::find(1)->commandes()->first();
-        $retard = Carbon::parse($t->pivot->updated_at)->diffInSeconds($t->pivot->created_at);
+        // $t = tube::find(1)->commandes()->first();
+        // $retard = Carbon::parse($t->pivot->updated_at)->diffInSeconds($t->pivot->created_at);
 
 
-        return dd($retard);
         // return dd($retard);
+        // // return dd($retard);
+
+        // $cs = commande::all();
+
+        // foreach ($cs as $c) {
+        //     $ts = $c->tubes()->get();
+        //     foreach ($ts as $t) {
+        //         if ($t->pivot->statut === 'en attente' || $t->pivot->statut === 'partial') {
+        //             $c->tubes()->updateExistingPivot($t->id, ['created_at' => $t->pivot->created_at]);
+        //             $retard = Carbon::parse($t->pivot->updated_at)->diffInSeconds($t->pivot->created_at, true);
+        //             $c->tubes()->updateExistingPivot($t->id, ['retard' => $retard]);
+        //         }
+        //     }
+        // }
+
+        // return dd($cs->first()->tubes()->first()->pivot);
     }
 }
