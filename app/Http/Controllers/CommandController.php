@@ -28,6 +28,14 @@ class CommandController extends Controller
             ->orderBy('description', 'desc')
             ->orderBy('updated_at')
             ->get();
+
+        foreach ($orders as $order) {
+            $fullorder = $order->quantity;
+            $partorder = validation::where('commande_id', $order->serial_cmd)
+                ->where('tube_id', $order->tube_id)->count();
+            $order->quantity = $fullorder-$partorder;
+        }
+
         return view('tubePage.validate',compact('orders'));
     }
 
@@ -53,10 +61,10 @@ class CommandController extends Controller
                 'serial_cmd' => $serial_cmd,
                 'tube_id' => $tube_id,
                 'quantity' => $qte,
-                'rack' => 'F01',
+                'rack' => '-',
                 'statut' => 'en attente',
                 'retard' => 0,
-                'description' => 'manque',
+                'description' => '-',
             ]);
         }
 

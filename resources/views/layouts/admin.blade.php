@@ -1,12 +1,19 @@
 @extends('layouts.main.app')
 
-{{-- @section('lg_menu')
-  <li><a href="{{ route('admin.index') }}" class="hover:text-blue-500">Produits</a></li>
-  <li><a href="#" class="hover:text-blue-500">Ajouter</a></li>
+@section('secondaryMenu')
+<div
+    class="bg-gray-900 text-white py-4 px-6 rounded-t-md flex justify-center gap-8 text-lg font-semibold uppercase max-sm:flex-col max-sm:items-center">
+    <a href="{{ route('admin.apn') }}"
+      class="hover:text-amber-400 {{ request()->routeIs('admin.apn') ? 'text-amber-400 underline' : '' }}">
+      APN
+    </a>
+    <a href="{{ route('admin.rack') }}"
+      class="hover:text-amber-400 {{ request()->routeIs('admin.rack') ? 'text-amber-400 underline' : '' }}">
+      RACK
+    </a>
+    <a href="{{ route('admin.rack') }}"
+      class="hover:text-amber-400 {{ request()->routeIs('admin.rack') ? 'text-amber-400 underline' : '' }}">
+      History
+    </a>
+  </div>
 @endsection
-@section('sm_menu')
-  <li><a href="{{ route('admin.index') }}" class="block px-4 py-2 hover:bg-gray-100">Produits</a>
-  </li>
-  <li><a href="{{ route('admin.create') }}" class="block px-4 py-2 hover:bg-gray-100">Ajouter</a>
-  </li>
-@endsection --}}

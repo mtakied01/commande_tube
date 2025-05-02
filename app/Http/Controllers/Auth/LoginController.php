@@ -31,7 +31,7 @@ class LoginController extends Controller
             if ($user->role==='admin') {
                 return redirect()->route('admin.index');
             }else{
-                return redirect()->route('home');
+                return redirect()->route('tube.index');
             }
 
         }
@@ -47,6 +47,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        return redirect()->route('login');
     }
 }

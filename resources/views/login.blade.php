@@ -12,7 +12,7 @@
     <div class="flex items-center justify-center mt-10">
 
       <div class="bg-white/80 backdrop-blur-md p-8 rounded-lg shadow-2xl fade-in delay-100 w-100">
-        <h2 class="text-2xl font-bold text-center text-gray-700">Se connecter</h2>
+        <h2 class="text-2xl font-bold text-center text-gray-700">Log In</h2>
 
         @if ($errors->any())
           <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
@@ -32,7 +32,7 @@
           <div>
             <button type="submit"
               class="w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              Connexion
+              Connection
             </button>
           </div>
         </form>

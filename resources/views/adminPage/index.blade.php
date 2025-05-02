@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Produits')
+@section('title', 'Admin')
 @section('dark','bg-black/60')  
 @section('content')
   <div>

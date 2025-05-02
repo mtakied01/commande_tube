@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   exportPdfBtn.addEventListener("click", () => {
     const doc = new jsPDF();
-    doc.text("Liste des Commandes", 14, 15);
+    doc.text("Order list", 14, 15);
 
     const table = document.getElementById("ordersTable");
     const headers = Array.from(table.querySelectorAll("thead th")).map(th => th.innerText.trim());

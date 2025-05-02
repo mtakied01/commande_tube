@@ -32,30 +32,12 @@ class calculerRetard implements ShouldQueue
         foreach ($cs as $c) {
             $ts = $c->tubes()->get();
             foreach ($ts as $t) {
-                if ($t->pivot->statut === 'en attente') {
-                    $c->tubes()->updateExistingPivot($t->id, ['statut' => 'en attente']);
-                    $retard = Carbon::parse($t->pivot->updated_at)->diffInSeconds($t->pivot->created_at,true);
+                if ($t->pivot->statut === 'en attente' or $t->pivot->statut === 'partial') {
+                    $c->tubes()->updateExistingPivot($t->id, ['statut' => $t->pivot->statut]);
+                    $retard = Carbon::parse($t->pivot->updated_at)->diffInSeconds($t->pivot->created_at, true);
                     $c->tubes()->updateExistingPivot($t->id, ['retard' => $retard]);
                 }
             }
         }
-
-        // try {
-        //     $c = commande::first();
-        //     $t = $c->tubes()->first();
-        //     if (!$t || !$t->pivot) {
-        //         Log::warning('no tubes or pivots');
-        //         return;
-        //     }
-        //     $retard = Carbon::parse($t->pivot->updated_at)->diffInSeconds(now());
-        //     // $c->tubes()->updateExistingPivot($t->id, ['retard' => $retard]);
-        //     $c->tubes()->updateExistingPivot($t->id, ['retard' => $retard + $t->pivot->retard]);
-        //     Log::info('updated');
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     Log::error('failed'.$th->getMessage());
-        // }
-
-
     }
 }

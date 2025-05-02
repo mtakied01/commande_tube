@@ -7,11 +7,11 @@
   <div class="bg-gray-900 text-white py-4 px-6 rounded-t-md flex justify-center gap-8 text-lg font-semibold uppercase max-sm:flex-col max-sm:items-center">
     <a href="{{ route('tube.index') }}"
       class="hover:text-amber-400 {{ request()->routeIs('tube.index') ? 'text-amber-400 underline' : '' }}">
-      Créer une commande
+      New Order
     </a>
     <a href="{{ route('tube.create') }}"
       class="hover:text-amber-400 {{ request()->routeIs('tube.create') ? 'text-amber-400 underline' : '' }}">
-      Confirmer une commande
+      Confirm order
     </a>
   </div>
 @endsection
@@ -21,7 +21,7 @@
   <div class="bg-black/30 px-5 pb-20 pt-10 rounded">
     <div class="absolute bg-amber-700/50 -z-10 inset-0 bg-cover bg-center">
     </div>
-    <h1 class="text-3xl px-2 py-6 rounded text-center uppercase font-bold text-amber-300 b-4">Créer une nouvelle commande :
+    <h1 class="text-3xl px-2 py-6 rounded text-center uppercase font-bold text-amber-300 b-4">Create new order :
     </h1>
     <form action="#" id="form" method="POST" class="space-y-4">
       @csrf
@@ -38,7 +38,7 @@
         <thead class="bg-gray-100 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
           <tr>
             <th class="px-4 py-3">APN</th>
-            <th class="px-4 py-3">Quantite</th>
+            <th class="px-4 py-3">Quantity</th>
             <th class="px-4 py-3">action</th>
           </tr>
         </thead>
@@ -46,7 +46,7 @@
       </table>
     </div>
     <div class="flex justify-center ">
-      <button id="validation" class="bg-indigo-800 text-amber-100 px-4 py-3 mt-5">Commander</button>
+      <button id="validation" class="bg-indigo-800 text-2xl uppercase text-amber-100 px-6 py-3 mt-5 hover:text-blue-500 hover:bg-white hover:font-bold cursor-pointer">Order</button>
     </div>
 
     @if (isset($data))

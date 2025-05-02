@@ -98,7 +98,7 @@
       <div class="container mx-auto flex justify-between items-center">
         <div class="flex items-center">
           <span class="w-4 h-4 bg-[#f84018] rounded-full"></span>
-          <a href="{{ route('home') }}" class="text-6xl max-sm:text-lg font-extrabold tracking-widest">APTIV</a>
+          <a href="{{ route('login') }}" class="text-6xl max-sm:text-lg font-extrabold tracking-widest">APTIV</a>
           <span class="w-4 h-4 bg-[#f84018] rounded-full"></span>
         </div>
 
@@ -123,7 +123,7 @@
             <li>
               <form method="POST" action="{{ route('logout') }}" class="text-red-500 hover:text-red-700">
                 @csrf
-                <button type="submit" class="text-red-500 hover:underline">Déconnexion</button>
+                <button type="submit" class="text-red-500 hover:underline">Log out</button>
               </form>
             </li>
           </ul>
@@ -142,7 +142,7 @@
           <li>
             <form method="POST" action="{{ route('logout') }}" class="text-red-500 block px-4 py-2 hover:text-red-700">
               @csrf
-              <button type="submit" class="text-red-500 hover:underline">Déconnexion</button>
+              <button type="submit" class="text-red-500 hover:underline">Log out</button>
             </form>
           </li>
         </ul>
@@ -164,8 +164,12 @@
       @yield('content')
     </main>
 
-    <footer class="bg-white/10 backdrop-blur-sm text-center text-xs text-white py-4 border-t z-50">
-      &copy; {{ date('Y') }} Aptiv - Tous droits réservés.
+    <footer class="bg-white/40 flex justify-between backdrop-blur-sm text-center text-xs text-black py-4 border-t z-50">
+      <div class="flex justify-end text-[#f84018]">
+        <h1>&copy; {{ date('Y') }} Aptiv - Tous droits réservés.</h1>
+      </div>
+      <h1 class="place-content-end mr-2">Developed by: <a href="https://github.com/Lokman32"
+          class="hover:text-blue-700">Louqmane Bamousse</a></h1>
     </footer>
 
   </div>

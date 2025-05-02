@@ -6,14 +6,15 @@
 @section('header', '')
 
 @section('secondaryMenu')
-  <div class="bg-gray-900 text-white py-4 px-6 rounded-t-md flex justify-center gap-8 text-lg font-semibold uppercase max-sm:flex-col max-sm:items-center">
+  <div
+    class="bg-gray-900 text-white py-4 px-6 rounded-t-md flex justify-center gap-8 text-lg font-semibold uppercase max-sm:flex-col max-sm:items-center">
     <a href="{{ route('tube.index') }}"
       class="hover:text-amber-400 {{ request()->routeIs('tube.index') ? 'text-amber-400 underline' : '' }}">
-      Créer une commande
+      New Order
     </a>
     <a href="{{ route('tube.create') }}"
       class="hover:text-amber-400 {{ request()->routeIs('tube.create') ? 'text-amber-400 underline' : '' }}">
-      Confirmer une commande
+      Confirm order
     </a>
   </div>
 @endsection
@@ -25,11 +26,10 @@
     <div class="absolute inset-0 bg-cover bg-center bg-amber-700/50 -z-10"></div>
 
     <div class="my-4">
-      <h1 class="text-xl font-semibold mb-4">Liste des Commandes</h1>
-      <button id="openPopup" class="bg-blue-500 px-4 py-2 rounded text-white font-semibold">Scanner une Commande</button>
+      <h1 class="text-xl font-semibold mb-4">Order list</h1>
+      <button id="openPopup" class="bg-blue-500 px-4 py-2 rounded text-white font-semibold">Scan Order</button>
     </div>
 
-    {{-- Popup --}}
     <div id="popup" class="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden z-50">
       <div class="bg-white p-6 rounded shadow-lg">
         <h2 class="text-lg font-semibold mb-4">Scanner la Commande</h2>
@@ -53,11 +53,11 @@
         <thead class="bg-gray-200">
           <tr>
             <th class="px-4 py-2 text-left">APN</th>
-            <th class="px-4 py-2 text-left">Quantité</th>
-            <th class="px-4 py-2 text-left">Commandé par</th>
+            <th class="px-4 py-2 text-left">Quantity</th>
+            <th class="px-4 py-2 text-left">Ordered by</th>
             <th class="px-4 py-2 text-left">Serial Commande</th>
             <th class="px-4 py-2 text-left">Date</th>
-            <th class="px-4 py-2 text-left">Statut</th>
+            <th class="px-4 py-2 text-left">Status</th>
             <th class="px-4 py-2 text-left">Retard</th>
             <th class="px-4 py-2 text-left">Description</th>
             <th class="px-4 py-2 text-left">Rack</th>
@@ -66,8 +66,7 @@
         <tbody>
           @forelse ($orders as $order)
             @php
-              $hours = floor($order->retard / 3600);
-              $minutes = floor(($order->retard % 3600) / 60);
+              $hours = intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true));
             @endphp
             <tr class="{{ $hours >= 2 ? 'bg-red-700' : '' }}">
               <td class="px-4 py-2">{!! App\Models\tube::find($order->tube_id)->dpn !!}</td>
@@ -77,7 +76,7 @@
               <td class="px-4 py-2">{{ $order->created_at }}</td>
               <td class="px-4 py-2">{{ $order->statut }}</td>
               <td class="px-4 py-2">
-                {{ $hours }}h {{ $minutes }}m
+                {{ intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true)) }} h
               </td>
               <td class="px-4 py-2">{{ $order->description }}</td>
               <td class="px-4 py-2"> {{ $order->rack }}</td>
@@ -91,7 +90,12 @@
       </table>
     </div>
 
-    <div id="scannedList" class="flex flex-col items-center mt-6 space-y-2"></div>
+    <div class="flex flex-col items-center mt-6 space-y-2">
+      <button id="confirmBtn"
+        class="bg-green-600 text-white font-semibold px-6 py-3 rounded mt-6 hover:bg-white hover:text-green-600 cursor-pointer">✅
+        Confirm Order</button>
+      <div id="scannedList"></div>
+    </div>
   </div>
 @endsection
 
@@ -125,46 +129,50 @@
       }
     });
 
-    apnInput.addEventListener('change', () => {
-      currentAPN = apnInput.value.trim();
-      serialInput.focus();
+    apnInput.addEventListener('keydown', (e) => {
+      if (e.code === 'Enter') {
+        currentAPN = apnInput.value.trim();
+        serialInput.focus();
+      }
     });
 
-    serialInput.addEventListener('change', () => {
-      const serialProduct = serialInput.value.trim();
-      if (!serialCmd || !currentAPN || !serialProduct) {
-        alert("Tous les champs doivent être scannés.");
-        return;
-      }
+    serialInput.addEventListener('keydown', (e) => {
+      if (e.code === 'Enter') {
+        const serialProduct = serialInput.value.trim();
+        if (!serialCmd || !currentAPN || !serialProduct) {
+          alert("Tous les champs doivent être scannés.");
+          return;
+        }
 
-      fetch('/check-product', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-          },
-          body: JSON.stringify({
-            serial_cmd: serialCmd,
-            apn: currentAPN,
-            serial_product: serialProduct
+        fetch('/check-product', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+              serial_cmd: serialCmd,
+              apn: currentAPN,
+              serial_product: serialProduct
+            })
           })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.valid) {
-            if (!scannedApnSeries.has(currentAPN)) scannedApnSeries.set(currentAPN, new Set());
-            scannedApnSeries.get(currentAPN).add(serialProduct);
-            renderScannedList();
-          } else {
-            alert('Produit non valide ou déjà scanné');
-          }
+          .then(res => res.json())
+          .then(data => {
+            if (data.valid) {
+              if (!scannedApnSeries.has(currentAPN)) scannedApnSeries.set(currentAPN, new Set());
+              scannedApnSeries.get(currentAPN).add(serialProduct);
+              renderScannedList();
+            } else {
+              alert('Produit non valide ou déjà scanné');
+            }
 
-          apnInput.value = '';
-          serialInput.value = '';
-          currentAPN = '';
-          apnInput.focus();
-        })
-        .catch(() => alert('Erreur de vérification'));
+            apnInput.value = '';
+            serialInput.value = '';
+            currentAPN = '';
+            apnInput.focus();
+          })
+          .catch(() => alert('Erreur de vérification'));
+      }
     });
 
     function renderScannedList() {
@@ -177,9 +185,7 @@
       });
     }
 
-    const validateBtn = document.createElement('button');
-    validateBtn.innerText = "✅ Valider la Commande";
-    validateBtn.className = "bg-green-600 text-white font-semibold px-6 py-3 rounded mt-6";
+    const validateBtn = document.getElementById('confirmBtn');
     validateBtn.onclick = () => {
       if (!serialCmd || scannedApnSeries.size === 0) return alert("Aucun produit scanné.");
 
@@ -210,6 +216,6 @@
         });
     };
 
-    scannedList.appendChild(validateBtn);
+    // scannedList.appendChild(validateBtn);
   </script>
 @endsection
