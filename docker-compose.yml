@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: command-tube-app
+    container_name: command-tube-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - command-tube
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:alpine
+    container_name: command-tube-nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - command-tube
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8.0
+    container_name: command-tube-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: command-tube
+      MYSQL_PASSWORD: 
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - command-tube
+
+networks:
+  command-tube:
+
+volumes:
+  db_data:
