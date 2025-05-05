@@ -50,7 +50,7 @@
               <td class="px-4 py-2">{{ $order->created_at }}</td>
               <td class="px-4 py-2">{{ $order->statut }}</td>
               <td class="px-4 py-2">
-                {{ intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true)) }} h
+                {{ intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true)) }} h {{ Carbon\Carbon::parse($order->created_at)->diff(now())->format('%I') }} min
               </td>
               <td class="px-4 py-2">{{ $order->description }}</td>
               <td class="px-4 py-2"> {{ $order->rack }}</td>

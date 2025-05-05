@@ -36,9 +36,20 @@ class administrationController extends Controller
   }
   public function searchRack(Request $req)
   {
+    $racks = [];
+    foreach (range(1, 12) as $fNumber) {
+      $racks[] = "F" . str_pad($fNumber, 2, '0', STR_PAD_LEFT);
+    }
+    foreach (['01', '02', '03'] as $number) {
+      foreach (['A', 'B', 'C'] as $letter) {
+      foreach (range(1, 5) as $suffix) {
+        $racks[] = "R{$number}-{$letter}" . str_pad($suffix, 2, '0', STR_PAD_LEFT);
+      }
+      }
+    }
     if (auth()->check() && auth()->user()->role === 'admin') {
       $products = tube::where('dpn','LIKE', '%'.$req->inpt)->paginate(20);
-      return view('adminPage.rack', compact('products'));
+      return view('adminPage.rack', compact('products','racks'));
       // return dd($products);
     }
   }
