@@ -5,6 +5,7 @@ use App\Http\Controllers\administrationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CommandController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\historicDashboard;
 use App\Http\Controllers\LogisticController;
 use App\Http\Controllers\testController;
 use App\Http\Middleware\PermissionMiddleware;
@@ -36,3 +37,8 @@ Route::post('/validate-products', [CommandController::class, 'validateProducts']
 
 Route::get('/apn',[administrationController::class,'showApn'])->name('admin.apn');
 Route::get('/rack',[administrationController::class,'showRack'])->name('admin.rack');
+Route::get('/dash',[historicDashboard::class,'historicDashboard'])->name('admin.history');
+
+Route::post('/apn',[administrationController::class,'addApn'])->name('apn.create');
+Route::post('/rack',[administrationController::class,'searchRack'])->name('admin.searchRack');
+Route::put('/rack/update/{id}',[administrationController::class,'updateRack']);

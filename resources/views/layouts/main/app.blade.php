@@ -92,7 +92,7 @@
 
   {{-- <div class="absolute inset-0 bg-black/30  -z-50"></div> --}}
 
-  <div class="relative z-10 flex flex-col min-h-screen">
+  <div class="relative z-10 flex flex-col min-h-screen bg-amber-800/50">
 
     <nav class="@yield('dark', '') backdrop-blur-sm border-b shadow-md p-4 text-white" x-data="{ open: false }">
       <div class="container mx-auto flex justify-between items-center">
@@ -168,7 +168,7 @@
       <div class="flex justify-end text-[#f84018]">
         <h1>&copy; {{ date('Y') }} Aptiv - Tous droits réservés.</h1>
       </div>
-      <h1 class="place-content-end mr-2">Developed by: <a href="https://github.com/Lokman32"
+      <h1 class="place-content-end mr-2">Developed by: <a target="_blank" href="https://github.com/Lokman32"
           class="hover:text-blue-700">Louqmane Bamousse</a></h1>
     </footer>
 

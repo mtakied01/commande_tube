@@ -33,10 +33,10 @@ class CommandController extends Controller
             $fullorder = $order->quantity;
             $partorder = validation::where('commande_id', $order->serial_cmd)
                 ->where('tube_id', $order->tube_id)->count();
-            $order->quantity = $fullorder-$partorder;
+            $order->quantity = $fullorder - $partorder;
         }
 
-        return view('tubePage.validate',compact('orders'));
+        return view('tubePage.validate', compact('orders'));
     }
 
     /**
@@ -56,12 +56,12 @@ class CommandController extends Controller
         foreach ($data as $val) {
             $dpn = $val['dpn'];
             $qte = $val['qte'];
-            $tube_id = tube::where('dpn', '=', $dpn)->get()[0]->id;
+            $tube = tube::where('dpn', '=', $dpn)->get()[0];
             LigneCommande::create([
                 'serial_cmd' => $serial_cmd,
-                'tube_id' => $tube_id,
+                'tube_id' => $tube->id,
                 'quantity' => $qte,
-                'rack' => '-',
+                'rack' => $tube->rack,
                 'statut' => 'en attente',
                 'retard' => 0,
                 'description' => '-',
@@ -133,7 +133,7 @@ class CommandController extends Controller
             ->count();
 
         // Step 4: Check if we still have room to validate this one
-        $canValidate = $countValidated < $ligne->quantity;
+        $canValidate = $countValidated <= $ligne->quantity;
 
         return response()->json(['valid' => $canValidate]);
 
@@ -163,9 +163,16 @@ class CommandController extends Controller
                 continue;
 
             $expectedQty = $ligne->quantity ?? 0;
-            $actualQty = count($product['serials']);
 
-            foreach ($product['serials'] as $serial) {
+            $alreadyValidated = Validation::where('commande_id', $request->serial_cmd)
+                ->where('tube_id', $tube->id)
+                ->count();
+
+            $remainingQty = $expectedQty - $alreadyValidated;
+
+            $serialsToValidate = array_slice($product['serials'], 0, $remainingQty);
+
+            foreach ($serialsToValidate as $serial) {
                 Validation::create([
                     'commande_id' => $request->serial_cmd,
                     'tube_id' => $tube->id,
@@ -173,16 +180,16 @@ class CommandController extends Controller
                 ]);
             }
 
-            // Update ligne_commande status
-            $commande = Commande::where('barcode', $request->serial_cmd)->first();
+            $totalValidated = $alreadyValidated + count($serialsToValidate);
+            $newStatus = match (true) {
+                $totalValidated >= $expectedQty => 'livrée',
+                $totalValidated > 0 => 'partial',
+                default => 'en attente',
+            };
 
-            if ($commande) {
-                $newStatus = $actualQty >= $expectedQty ? 'livrée' : 'partial';
-
-                $commande->tubes()->updateExistingPivot($tube->id, [
-                    'statut' => $newStatus
-                ]);
-            }
+            LigneCommande::where('serial_cmd', $request->serial_cmd)
+                ->where('tube_id', $tube->id)
+                ->update(['statut' => $newStatus]);
 
         }
 

@@ -11,8 +11,8 @@
       class="hover:text-amber-400 {{ request()->routeIs('admin.rack') ? 'text-amber-400 underline' : '' }}">
       RACK
     </a>
-    <a href="{{ route('admin.rack') }}"
-      class="hover:text-amber-400 {{ request()->routeIs('admin.rack') ? 'text-amber-400 underline' : '' }}">
+    <a href="{{ route('admin.history') }}"
+      class="hover:text-amber-400 {{ request()->routeIs('admin.history') ? 'text-amber-400 underline' : '' }}">
       History
     </a>
   </div>

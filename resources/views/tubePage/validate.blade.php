@@ -73,7 +73,7 @@
               <td class="px-4 py-2">{{ $order->quantity }}</td>
               <td class="px-4 py-2">{!! App\Models\commande::find($order->serial_cmd)->user->matricule !!}</td>
               <td class="px-4 py-2">{!! App\Models\commande::find($order->serial_cmd)->barcode !!}</td>
-              <td class="px-4 py-2">{{ $order->created_at }}</td>
+                <td class="px-4 py-2">{{ $order->created_at->format('Y/m/d H:i') }}</td>
               <td class="px-4 py-2">{{ $order->statut }}</td>
               <td class="px-4 py-2">
                 {{ intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true)) }} h

@@ -24,6 +24,7 @@ return new class extends Migration {
       $table->string('type');
       $table->integer('packaging');
       $table->string('unity');
+      $table->string('rack');
       $table->timestamps();
     });
 
@@ -49,16 +50,6 @@ return new class extends Migration {
       $table->foreign('tube_id')->references('id')->on('tubes');
     });
 
-    Schema::create('emplacement_tube',function (Blueprint $table) {
-      $table->id();
-      $table->string('Rack');
-      $table->unsignedBigInteger('tube_id');
-      $table->integer('quantite');
-      $table->integer('min');
-
-      $table->foreign('tube_id')->references('id')->on('tubes');
-    });
-
     Schema::create('validations', function (Blueprint $table) {
       $table->id();
       $table->string('commande_id');
@@ -66,8 +57,7 @@ return new class extends Migration {
       $table->unsignedBigInteger('tube_id');
       $table->foreign('tube_id')->references('id')->on('tubes')->onDelete('cascade');
       $table->string('serial_product')->unique();
-      $table->timestamp('validated_at')->nullable();
-      $table->timestamps();
+      $table->timestamp('validated_at')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
   });
 
   }

@@ -8,6 +8,8 @@ class validation extends Model
 {
     protected $guarded = [];
 
+    public $timestamps = false;
+
     public function commande()
     {
         return $this->belongsTo(Commande::class);
