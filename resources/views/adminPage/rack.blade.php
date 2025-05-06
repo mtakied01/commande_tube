@@ -10,8 +10,8 @@
       </div>
     </div> --}}
 
-    <div class="max-w-7xl mx-auto p-6">
-      <h1 class="text-3xl font-bold mb-6">Gestion des Produits</h1>
+    <div class="max-w-7xl bg-black/30 mx-auto p-6">
+      <h1 class="text-3xl text-white font-bold mb-6">Gestion des Produits</h1>
 
       <form action="{{ route('admin.searchRack') }}" method="post"
         class="space-y-4 p-6 bg-gray-400/20 shadow-md rounded-md">
@@ -20,13 +20,13 @@
           <label class="uppercase text-sm font-bold text-gray-700 mb-2" for="apn">search</label>
           <div class="flex">
             <input type="text" id="apn" name="inpt"
-              class="border uppercase border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+              class="border uppercase border-black border-2 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
             <input class="bg-blue-300 ml-2 p-2 px-6 rounded" type="submit" value="Search">
           </div>
         </div>
       </form>
 
-      <div class="overflow-x-auto bg-white/85 shadow rounded-lg">
+      <div class="overflow-x-auto bg-gray-300 shadow rounded-lg">
         <table class="min-w-full text-sm text-gray-800">
           <thead class="bg-gray-100/85 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
             <tr>

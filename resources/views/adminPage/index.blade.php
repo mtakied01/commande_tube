@@ -9,10 +9,10 @@
       </div>
     </div> --}}
 
-    <div class="max-w-7xl mx-auto p-6">
+    <div class="max-w-7xl bg-black/30 mx-auto p-6">
       <h1 class="text-3xl font-bold mb-6">Gestion des Produits</h1>
 
-      <div class="overflow-x-auto bg-white/85 shadow rounded-lg">
+      <div class="overflow-x-auto bg-gray-300 shadow rounded-lg">
         <table class="min-w-full text-sm text-gray-800">
           <thead class="bg-gray-100/85 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
             <tr>

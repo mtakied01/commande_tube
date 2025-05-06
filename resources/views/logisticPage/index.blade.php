@@ -11,7 +11,7 @@
 
 @section('content')
   <div class="text-black">
-    <div class="absolute inset-0 bg-cover bg-center bg-gray-700/50 -z-10"></div>
+    <div class="absolute inset-0 bg-cover bg-center bg-neutral-300 -z-10"></div>
 
     <div class="flex justify-between  mb-5">
       <h1 class="text-xl font-semibold flex items-center">Order list</h1>

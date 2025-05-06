@@ -1,5 +1,5 @@
 @extends('layouts.main.app')
-<div class="absolute bg-gray-900/25 -z-10 inset-0 bg-cover bg-center">
+<div class="absolute bg-neutral-300 -z-10 inset-0 bg-cover bg-center">
 </div>
 @section('dark','bg-black/60')
 

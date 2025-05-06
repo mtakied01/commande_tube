@@ -6,13 +6,36 @@
 
 @section('content')
 
-  <h2>📊 Commandes vs Validations (Last 7 Days)</h2>
+  <h2>Commandes vs Validations (Last 7 Days)</h2>
 
-  <form action="{{ route('admin.history') }}" method="GET">
-    <label for="selected_date">Select a Date:</label>
-    <input type="date" id="selected_date" name="selected_date" value="{{ $selectedDate }}">
-    <button type="submit">Filter</button>
+  <form action="{{ route('admin.history') }}" method="GET" class="flex items-end space-x-20 mr-10">
+    <div class="w-full">
+      <label class="block mb-2 text-sm font-medium text-gray-700" for="selected_date">Select a Date:</label>
+      <input class="w-full px-4 py-2 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        type="date" id="selected_date" name="selected_date" value="{{ $selectedDate }}">
+    </div>
+    <div
+      class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <button type="submit">Filter</button>
+    </div>
   </form>
+  {{-- 
+  <form method="POST" action="{{ route('login') }}" class="space-y-6">
+    @csrf
+
+    <div>
+      <label for="matricule" class="block mb-2 text-sm font-medium text-gray-700">Matricule</label>
+      <input type="text" name="matricule" id="matricule" required
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <div>
+      <button type="submit"
+        class="w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Connection
+      </button>
+    </div>
+  </form> --}}
 
   <div class="chart-container">
     <canvas id="commandesChart" height="100"></canvas>
@@ -24,15 +47,12 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const ctx = document.getElementById('commandesChart').getContext('2d');
-      
-      // Ensure chartData is passed correctly from Blade
+
       const chartData = {!! json_encode($chartData) !!};
 
-      // Log chartData to check the structure
       console.log(chartData);
 
-      // Prepare data
-      const labels = chartData.map(item => item.date);  // Use date as x-axis labels
+      const labels = chartData.map(item => item.date);
       const commandesData = {
         'Morning': chartData.map(item => item.commandes['Morning']),
         'Afternoon': chartData.map(item => item.commandes['Afternoon']),
@@ -44,40 +64,38 @@
         'Night': chartData.map(item => item.validated['Night'])
       };
 
-      // Create the chart
       const chart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: labels,  // Dates as x-axis labels
-          datasets: [
-            {
+          labels: labels,
+          datasets: [{
               label: 'Morning Commandes',
-              backgroundColor: '#3b82f6',
+              backgroundColor: '#3b82f670',
               data: commandesData['Morning'],
             },
             {
               label: 'Afternoon Commandes',
-              backgroundColor: '#10b981',
+              backgroundColor: '#3b82f670',
               data: commandesData['Afternoon'],
             },
             {
               label: 'Night Commandes',
-              backgroundColor: '#f59e0b',
+              backgroundColor: '#3b82f670',
               data: commandesData['Night'],
             },
             {
               label: 'Morning Validations',
-              backgroundColor: '#34d399',
+              backgroundColor: '#34d39970',
               data: validatedData['Morning'],
             },
             {
               label: 'Afternoon Validations',
-              backgroundColor: '#60a5fa',
+              backgroundColor: '#34d39970',
               data: validatedData['Afternoon'],
             },
             {
               label: 'Night Validations',
-              backgroundColor: '#fbbf24',
+              backgroundColor: '#34d39970',
               data: validatedData['Night'],
             }
           ]

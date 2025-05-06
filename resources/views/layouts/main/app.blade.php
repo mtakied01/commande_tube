@@ -92,7 +92,7 @@
 
   {{-- <div class="absolute inset-0 bg-black/30  -z-50"></div> --}}
 
-  <div class="relative z-10 flex flex-col min-h-screen bg-gray-800/10">
+  <div class="relative z-10 flex flex-col min-h-screen bg-white/10">
 
     <nav class="@yield('dark', '') backdrop-blur-sm border-b shadow-md p-4 text-white" x-data="{ open: false }">
       <div class="container mx-auto flex justify-between items-center">

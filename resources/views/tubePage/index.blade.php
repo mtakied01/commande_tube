@@ -19,8 +19,8 @@
 
 @section('content')
 
-  <div class="bg-black/30 px-5 pb-20 pt-10 rounded">
-    <div class="absolute bg-gray-900/25 -z-10 inset-0 bg-cover bg-center">
+  <div class="bg-black/5 px-5 pb-20 pt-10 rounded">
+    <div class="absolute bg-neutral-300 -z-10 inset-0 bg-cover bg-center">
     </div>
     <h1 class="text-3xl px-2 py-6 rounded text-center uppercase font-bold text-black/60 b-4">Create new order :
     </h1>
@@ -36,7 +36,7 @@
 
     <div class="overflow-x-auto bg-white shadow rounded-lg">
       <table id="commande" class="min-w-full text-sm text-gray-800">
-        <thead class="bg-gray-100 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+        <thead class="bg-gray-400 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
           <tr>
             <th class="px-4 py-3">APN</th>
             <th class="px-4 py-3">Quantity</th>

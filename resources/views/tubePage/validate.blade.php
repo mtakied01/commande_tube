@@ -22,8 +22,8 @@
 @section('content')
 
 
-  <div class="text-black">
-    <div class="absolute inset-0 bg-cover bg-center bg-gray-700/50 -z-10"></div>
+  <div class="text-black bg-black/5 p-4">
+    <div class="absolute inset-0 bg-cover bg-center bg-neutral-300 -z-10"></div>
 
     <div class="my-4">
       <h1 class="text-xl font-semibold mb-4">Order list</h1>
@@ -43,9 +43,9 @@
 
     <div class="flex flex-col items-center">
       <input type="text" placeholder="APN" id="input1"
-        class="w-full max-w-3xl py-3 my-2 px-6 text-center text-2xl rounded bg-white/30">
+        class="w-full border border-black placeholder-black max-w-3xl py-3 my-2 px-6 text-center text-2xl rounded bg-white/30">
       <input type="text" placeholder="Serial produit" id="serial"
-        class="w-full max-w-3xl py-3 my-2 px-6 text-center text-2xl rounded bg-white/30">
+        class="w-full border border-black placeholder-black max-w-3xl py-3 my-2 px-6 text-center text-2xl rounded bg-white/30">
     </div>
 
     <div class="overflow-x-auto z-30 mt-6">
