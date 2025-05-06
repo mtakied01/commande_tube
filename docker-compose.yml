@@ -20,7 +20,7 @@ services:
     image: nginx:alpine
     container_name: command-tube-nginx
     ports:
-      - "8000:80"
+      - "3013:80"
     volumes:
       - ./:/var/www
       - ./nginx/conf.d:/etc/nginx/conf.d
