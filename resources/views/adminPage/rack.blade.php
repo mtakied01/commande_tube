@@ -14,7 +14,7 @@
       <h1 class="text-3xl font-bold mb-6">Gestion des Produits</h1>
 
       <form action="{{ route('admin.searchRack') }}" method="post"
-        class="space-y-4 p-6 bg-amber-400/20 shadow-md rounded-md">
+        class="space-y-4 p-6 bg-gray-400/20 shadow-md rounded-md">
         @csrf
         <div class="flex flex-col">
           <label class="uppercase text-sm font-bold text-gray-700 mb-2" for="apn">search</label>
@@ -40,7 +40,7 @@
           </thead>
           <tbody class="divide-y divide-gray-200">
             @foreach ($products as $product)
-              <tr class="cursor-pointer hover:bg-amber-100 transition" data-id="{{ $product->id }}"
+              <tr class="cursor-pointer hover:bg-gray-100 transition" data-id="{{ $product->id }}"
                 data-dpn="{{ $product->dpn }}" data-type="{{ $product->type }}" data-packaging="{{ $product->packaging }}"
                 data-unity="{{ $product->unity }}" data-rack="{{ $product->rack }}">
 

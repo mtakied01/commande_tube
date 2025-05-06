@@ -1,72 +1,115 @@
 @extends('layouts.admin')
 @section('title', 'Historic Dashboard')
+@section('jsExp')
+  @vite(['resources/js/app.js'])
+@endsection
 
 @section('content')
-  <h1 class="text-3xl font-bold mb-6">Dashboard: Tube Orders by Shift and Day of the Week</h1>
-  <div class="container flex w-full justify-between mx-auto p-6 space-x-4">
-    <div class="mb-8 w-full">
-      <h2 class="text-xl font-semibold">Orders by Day of the Week</h2>
-      <canvas id="statusChart"></canvas>
-    </div>
+
+  <h2>📊 Commandes vs Validations (Last 7 Days)</h2>
+
+  <form action="{{ route('admin.history') }}" method="GET">
+    <label for="selected_date">Select a Date:</label>
+    <input type="date" id="selected_date" name="selected_date" value="{{ $selectedDate }}">
+    <button type="submit">Filter</button>
+  </form>
+
+  <div class="chart-container">
+    <canvas id="commandesChart" height="100"></canvas>
   </div>
+
 @endsection
 
 @section('script')
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const labels = {!! json_encode($chartLabels) !!};
-    const datasets = {!! json_encode($chartData) !!};
+    document.addEventListener('DOMContentLoaded', function() {
+      const ctx = document.getElementById('commandesChart').getContext('2d');
+      
+      // Ensure chartData is passed correctly from Blade
+      const chartData = {!! json_encode($chartData) !!};
 
-    const ctx = document.getElementById('statusChart').getContext('2d');
-    const statusChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: datasets
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: 'État des commandes par jour et shift'
+      // Log chartData to check the structure
+      console.log(chartData);
+
+      // Prepare data
+      const labels = chartData.map(item => item.date);  // Use date as x-axis labels
+      const commandesData = {
+        'Morning': chartData.map(item => item.commandes['Morning']),
+        'Afternoon': chartData.map(item => item.commandes['Afternoon']),
+        'Night': chartData.map(item => item.commandes['Night'])
+      };
+      const validatedData = {
+        'Morning': chartData.map(item => item.validated['Morning']),
+        'Afternoon': chartData.map(item => item.validated['Afternoon']),
+        'Night': chartData.map(item => item.validated['Night'])
+      };
+
+      // Create the chart
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,  // Dates as x-axis labels
+          datasets: [
+            {
+              label: 'Morning Commandes',
+              backgroundColor: '#3b82f6',
+              data: commandesData['Morning'],
+            },
+            {
+              label: 'Afternoon Commandes',
+              backgroundColor: '#10b981',
+              data: commandesData['Afternoon'],
+            },
+            {
+              label: 'Night Commandes',
+              backgroundColor: '#f59e0b',
+              data: commandesData['Night'],
+            },
+            {
+              label: 'Morning Validations',
+              backgroundColor: '#34d399',
+              data: validatedData['Morning'],
+            },
+            {
+              label: 'Afternoon Validations',
+              backgroundColor: '#60a5fa',
+              data: validatedData['Afternoon'],
+            },
+            {
+              label: 'Night Validations',
+              backgroundColor: '#fbbf24',
+              data: validatedData['Night'],
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false,
+              position: 'top'
+            },
+            title: {
+              display: true,
+              text: 'Commandes vs Validations for Each Shift'
+            }
           },
-          tooltip: {
-            mode: 'nearest',
-            intersect: true,
-            callbacks: {
-              label: function(tooltipItem) {
-                return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Date'
+              }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
               }
             }
-          },
-          legend: {
-            display: false,
-            position: 'top'
-          }
-        },
-        interaction: {
-          mode: 'nearest',
-          intersect: true
-        },
-        scales: {
-          x: {
-            stacked: true,
-            title: {
-              display: true,
-              text: 'Jours (répétés par shift)'
-            }
-          },
-          y: {
-            stacked: true,
-            title: {
-              display: true,
-              text: 'Quantité'
-            },
-            beginAtZero: true
           }
         }
-      }
+      });
     });
   </script>
 @endsection

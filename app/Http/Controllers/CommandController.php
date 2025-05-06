@@ -196,6 +196,16 @@ class CommandController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function updateDescription($tube_id, $commande_id, Request $request)
+    {
+        LigneCommande::
+            where('tube_id', $tube_id)
+            ->where('serial_cmd', $commande_id)
+            ->update(['description' => $request->description]);
+
+        return response()->json(['status' => 'success']);
+    }
+
 
 
 

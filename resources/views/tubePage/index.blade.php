@@ -4,7 +4,8 @@
 @section('dark', 'bg-black/60')
 
 @section('secondaryMenu')
-  <div class="bg-gray-900 text-white py-4 px-6 rounded-t-md flex justify-center gap-8 text-lg font-semibold uppercase max-sm:flex-col max-sm:items-center">
+  <div
+    class="bg-gray-900 text-white py-4 px-6 flex justify-center gap-8 text-lg font-semibold uppercase max-sm:flex-col max-sm:items-center">
     <a href="{{ route('tube.index') }}"
       class="hover:text-amber-400 {{ request()->routeIs('tube.index') ? 'text-amber-400 underline' : '' }}">
       New Order
@@ -19,16 +20,16 @@
 @section('content')
 
   <div class="bg-black/30 px-5 pb-20 pt-10 rounded">
-    <div class="absolute bg-amber-700/50 -z-10 inset-0 bg-cover bg-center">
+    <div class="absolute bg-gray-900/25 -z-10 inset-0 bg-cover bg-center">
     </div>
-    <h1 class="text-3xl px-2 py-6 rounded text-center uppercase font-bold text-amber-300 b-4">Create new order :
+    <h1 class="text-3xl px-2 py-6 rounded text-center uppercase font-bold text-black/60 b-4">Create new order :
     </h1>
     <form action="#" id="form" method="POST" class="space-y-4">
       @csrf
       <div id="tube-container">
         <div class="tube-group flex gap-2 items-end mb-2">
           <input id='input' type="text" placeholder="Scanner barcode ici"
-            class="w-full py-3 my-2 px-10 text-center text-4xl bg-gray-600/50">
+            class="w-full py-3 my-2 px-10 placeholder-black text-center text-4xl bg-white/50">
         </div>
       </div>
     </form>
@@ -46,7 +47,8 @@
       </table>
     </div>
     <div class="flex justify-center ">
-      <button id="validation" class="bg-indigo-800 text-2xl uppercase text-amber-100 px-6 py-3 mt-5 hover:text-blue-500 hover:bg-white hover:font-bold cursor-pointer">Order</button>
+      <button id="validation"
+        class="bg-indigo-800 text-2xl uppercase text-amber-100 px-6 py-3 mt-5 hover:text-blue-500 hover:bg-white hover:font-bold cursor-pointer">Order</button>
     </div>
 
     @if (isset($data))
@@ -94,8 +96,23 @@
       input.addEventListener('keydown', (e) => {
 
         if (e.code == 'Enter') {
-          const value = e.target.value.trim();
+          e.preventDefault();
+
+          let value = e.target.value.trim();
+          if (value.toLowerCase().startsWith('1p')) {
+            value = value.slice(2);
+          }
           if (!value) return;
+
+          // Check if already exists in the table
+          const existingRows = Array.from(table1.querySelectorAll('tbody tr'));
+          const alreadyExists = existingRows.some(row => row.children[0].textContent === value);
+
+          if (alreadyExists) {
+            alert('This APN has already been scanned.');
+            e.target.value = '';
+            return;
+          }
 
           fetch('/check', {
               method: 'POST',

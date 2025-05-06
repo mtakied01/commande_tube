@@ -23,7 +23,7 @@
 
 
   <div class="text-black">
-    <div class="absolute inset-0 bg-cover bg-center bg-amber-700/50 -z-10"></div>
+    <div class="absolute inset-0 bg-cover bg-center bg-gray-700/50 -z-10"></div>
 
     <div class="my-4">
       <h1 class="text-xl font-semibold mb-4">Order list</h1>
@@ -73,10 +73,11 @@
               <td class="px-4 py-2">{{ $order->quantity }}</td>
               <td class="px-4 py-2">{!! App\Models\commande::find($order->serial_cmd)->user->matricule !!}</td>
               <td class="px-4 py-2">{!! App\Models\commande::find($order->serial_cmd)->barcode !!}</td>
-                <td class="px-4 py-2">{{ $order->created_at->format('Y/m/d H:i') }}</td>
+              <td class="px-4 py-2">{{ $order->created_at->format('Y/m/d H:i') }}</td>
               <td class="px-4 py-2">{{ $order->statut }}</td>
               <td class="px-4 py-2">
-                {{ intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true)) }} h {{ Carbon\Carbon::parse($order->created_at)->diff(now())->format('%I') }} min
+                {{ intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true)) }} h
+                {{ Carbon\Carbon::parse($order->created_at)->diff(now())->format('%I') }} min
               </td>
               <td class="px-4 py-2">{{ $order->description }}</td>
               <td class="px-4 py-2"> {{ $order->rack }}</td>
@@ -131,7 +132,11 @@
 
     apnInput.addEventListener('keydown', (e) => {
       if (e.code === 'Enter') {
-        currentAPN = apnInput.value.trim();
+        if (apnInput.value.trim().startsWith('1P')) {
+          currentAPN = apnInput.value.trim().slice(2);
+        }else{
+          currentAPN = apnInput.value.trim();
+        }
         serialInput.focus();
       }
     });
@@ -180,7 +185,7 @@
       scannedApnSeries.forEach((serials, apn) => {
         const div = document.createElement('div');
         div.className = "p-2 bg-gray-100 rounded w-full max-w-3xl text-center";
-        div.innerHTML = `<strong>${apn}</strong>: ${Array.from(serials).join(', ')}`;
+        div.innerHTML = `<strong>${apn}</strong>: <span class="text-gray-700">(${serials.size} produits scannés)</span>`;
         scannedList.appendChild(div);
       });
     }
