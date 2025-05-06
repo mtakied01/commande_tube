@@ -22,8 +22,8 @@
 @section('content')
 
 
-  <div class="text-black">
-    <div class="absolute inset-0 bg-cover bg-center bg-amber-700/50 -z-10"></div>
+  <div class="text-black bg-black/5 p-4">
+    <div class="absolute inset-0 bg-cover bg-center bg-neutral-300 -z-10"></div>
 
     <div class="my-4">
       <h1 class="text-xl font-semibold mb-4">Order list</h1>
@@ -43,9 +43,9 @@
 
     <div class="flex flex-col items-center">
       <input type="text" placeholder="APN" id="input1"
-        class="w-full max-w-3xl py-3 my-2 px-6 text-center text-2xl rounded bg-white/30">
+        class="w-full border border-black placeholder-black max-w-3xl py-3 my-2 px-6 text-center text-2xl rounded bg-white/30">
       <input type="text" placeholder="Serial produit" id="serial"
-        class="w-full max-w-3xl py-3 my-2 px-6 text-center text-2xl rounded bg-white/30">
+        class="w-full border border-black placeholder-black max-w-3xl py-3 my-2 px-6 text-center text-2xl rounded bg-white/30">
     </div>
 
     <div class="overflow-x-auto z-30 mt-6">
@@ -73,10 +73,11 @@
               <td class="px-4 py-2">{{ $order->quantity }}</td>
               <td class="px-4 py-2">{!! App\Models\commande::find($order->serial_cmd)->user->matricule !!}</td>
               <td class="px-4 py-2">{!! App\Models\commande::find($order->serial_cmd)->barcode !!}</td>
-                <td class="px-4 py-2">{{ $order->created_at->format('Y/m/d H:i') }}</td>
+              <td class="px-4 py-2">{{ $order->created_at->format('Y/m/d H:i') }}</td>
               <td class="px-4 py-2">{{ $order->statut }}</td>
               <td class="px-4 py-2">
-                {{ intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true)) }} h {{ Carbon\Carbon::parse($order->created_at)->diff(now())->format('%I') }} min
+                {{ intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true)) }} h
+                {{ Carbon\Carbon::parse($order->created_at)->diff(now())->format('%I') }} min
               </td>
               <td class="px-4 py-2">{{ $order->description }}</td>
               <td class="px-4 py-2"> {{ $order->rack }}</td>
@@ -131,7 +132,11 @@
 
     apnInput.addEventListener('keydown', (e) => {
       if (e.code === 'Enter') {
-        currentAPN = apnInput.value.trim();
+        if (apnInput.value.trim().startsWith('1P')) {
+          currentAPN = apnInput.value.trim().slice(2);
+        } else {
+          currentAPN = apnInput.value.trim();
+        }
         serialInput.focus();
       }
     });
@@ -144,20 +149,27 @@
           return;
         }
 
-        fetch('/check-product', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({
-              serial_cmd: serialCmd,
-              apn: currentAPN,
-              serial_product: serialProduct
-            })
-          })
-          .then(res => res.json())
-          .then(data => {
+        (async () => {
+          try {
+            const response = await fetch('/api/check-product', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+              },
+              body: JSON.stringify({
+                serial_cmd: serialCmd,
+                apn: currentAPN,
+                serial_product: serialProduct
+              })
+            });
+            apnInput.value = '';
+            serialInput.value = '';
+            apnInput.focus();
+
+
+            const data = await response.json();
+
             if (data.valid) {
               if (!scannedApnSeries.has(currentAPN)) scannedApnSeries.set(currentAPN, new Set());
               scannedApnSeries.get(currentAPN).add(serialProduct);
@@ -166,12 +178,12 @@
               alert('Produit non valide ou déjà scanné');
             }
 
-            apnInput.value = '';
-            serialInput.value = '';
+            
             currentAPN = '';
-            apnInput.focus();
-          })
-          .catch(() => alert('Erreur de vérification'));
+          } catch (error) {
+            alert('Erreur de vérification');
+          }
+        })();
       }
     });
 
@@ -180,7 +192,8 @@
       scannedApnSeries.forEach((serials, apn) => {
         const div = document.createElement('div');
         div.className = "p-2 bg-gray-100 rounded w-full max-w-3xl text-center";
-        div.innerHTML = `<strong>${apn}</strong>: ${Array.from(serials).join(', ')}`;
+        div.innerHTML =
+          `<strong>${apn}</strong>: <span class="text-gray-700">(${serials.size} produits scannés)</span>`;
         scannedList.appendChild(div);
       });
     }
@@ -194,26 +207,32 @@
         serials: Array.from(serials)
       }));
 
-      fetch('/validate-products', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-          },
-          body: JSON.stringify({
-            serial_cmd: serialCmd,
-            products
-          })
-        })
-        .then(res => res.json())
-        .then(response => {
-          if (response.success) {
+      (async () => {
+        try {
+          const response = await fetch('/validate-products', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+              serial_cmd: serialCmd,
+              products
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
             alert("Validation réussie !");
             location.reload();
           } else {
             alert("Erreur lors de la validation.");
           }
-        });
+        } catch (error) {
+          alert("Une erreur s'est produite lors de la validation.");
+        }
+      })();
     };
 
     // scannedList.appendChild(validateBtn);

@@ -13,9 +13,8 @@ class LogisticController extends Controller
   public function index()
   {
     $commande = commande::all();
-    $orders = LigneCommande::whereIn('statut', ['en attente','partial'])
-      ->orderBy('description', 'desc')
-      ->orderBy('updated_at')
+    $orders = LigneCommande::whereIn('statut', ['en attente', 'partial'])
+      ->orderBy('created_at')
       ->get();
 
     // $orders[0]->commande();

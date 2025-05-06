@@ -1,4 +1,7 @@
 @extends('layouts.main.app')
+<div class="absolute bg-neutral-300 -z-10 inset-0 bg-cover bg-center">
+</div>
+@section('dark','bg-black/60')
 
 @section('secondaryMenu')
 <div

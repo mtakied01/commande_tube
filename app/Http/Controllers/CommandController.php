@@ -25,8 +25,7 @@ class CommandController extends Controller
     public function create()
     {
         $orders = LigneCommande::whereIn('statut', ['en attente', 'partial'])
-            ->orderBy('description', 'desc')
-            ->orderBy('updated_at')
+            ->orderBy('created_at')
             ->get();
 
         foreach ($orders as $order) {
@@ -194,6 +193,16 @@ class CommandController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    public function updateDescription($tube_id, $commande_id, Request $request)
+    {
+        LigneCommande::
+            where('tube_id', $tube_id)
+            ->where('serial_cmd', $commande_id)
+            ->update(['description' => $request->description ?? '']);
+
+        return response()->json(['status' => 'success']);
     }
 
 

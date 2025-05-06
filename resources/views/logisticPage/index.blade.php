@@ -11,7 +11,7 @@
 
 @section('content')
   <div class="text-black">
-    <div class="absolute inset-0 bg-cover bg-center bg-amber-700/50 -z-10"></div>
+    <div class="absolute inset-0 bg-cover bg-center bg-neutral-300 -z-10"></div>
 
     <div class="flex justify-between  mb-5">
       <h1 class="text-xl font-semibold flex items-center">Order list</h1>
@@ -23,7 +23,7 @@
 
 
     <div class="overflow-x-auto z-30">
-      <table id="ordersTable" class="min-w-full table-auto bg-white shadow-md rounded text-sm sm:text-base">
+      <table id="ordersTable" class="cursor-default min-w-full table-auto bg-white shadow-md rounded text-sm sm:text-base">
         <thead class="bg-gray-200">
           <tr>
             <th class="px-4 py-2 text-left">APN</th>
@@ -42,7 +42,7 @@
             @php
               $hours = intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true));
             @endphp
-            <tr class="{{ $hours >= 2 ? 'bg-red-700' : '' }}">
+            <tr class="{{ $hours >= 2 ? 'bg-red-700' : '' }}" onclick="editDescription({{ $order->tube_id }}, `{{ $order->serial_cmd }}`, `{{ $order->description }}`)">
               <td class="px-4 py-2">{!! App\Models\tube::find($order->tube_id)->dpn !!}</td>
               <td class="px-4 py-2">{{ $order->quantity }}</td>
               <td class="px-4 py-2">{!! App\Models\commande::find($order->serial_cmd)->user->matricule !!}</td>
@@ -50,7 +50,8 @@
               <td class="px-4 py-2">{{ $order->created_at }}</td>
               <td class="px-4 py-2">{{ $order->statut }}</td>
               <td class="px-4 py-2">
-                {{ intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true)) }} h {{ Carbon\Carbon::parse($order->created_at)->diff(now())->format('%I') }} min
+                {{ intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true)) }} h
+                {{ Carbon\Carbon::parse($order->created_at)->diff(now())->format('%I') }} min
               </td>
               <td class="px-4 py-2">{{ $order->description }}</td>
               <td class="px-4 py-2"> {{ $order->rack }}</td>
@@ -66,4 +67,35 @@
 
     </div>
   </div>
+@endsection
+@section('script')
+  <script>
+    function editDescription(tubeId, commandeId, currentDescription) {
+  const newDescription = prompt("Edit the description:", currentDescription);
+  if (newDescription !== currentDescription) {
+    (async () => {
+      try {
+      const response = await fetch(`/update-description/${tubeId}/${commandeId}`, {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ description: newDescription })
+      });
+
+      if (response.ok) {
+        location.reload();
+      } else {
+        alert("Failed to update the description.");
+      }
+      } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while updating the description.");
+      }
+    })();
+  }
+}
+
+  </script>
 @endsection

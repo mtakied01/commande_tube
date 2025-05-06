@@ -10,6 +10,9 @@ class LoginController extends Controller
 {
     public function index()
     {
+        if (auth()->check()) {
+            return redirect()->route('tube.index');
+        }
         return view('login');
     }
 
