@@ -4,11 +4,6 @@
 
 @section('content')
   <div>
-    {{-- <div class="overflow-hidden ">
-      <div class="absolute inset-0 bg-cover bg-center"
-        style="background-image: url('/aptiv2.jpg'); z-index: -1;">
-      </div>
-    </div> --}}
 
     <div class="max-w-7xl bg-black/30 mx-auto p-6">
       <h1 class="text-3xl text-white font-bold mb-6">Gestion des Produits</h1>
@@ -20,7 +15,7 @@
           <label class="uppercase text-sm font-bold text-gray-700 mb-2" for="apn">search</label>
           <div class="flex">
             <input type="text" id="apn" name="inpt"
-              class="border uppercase border-black border-2 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+              class="uppercase border-black border-2 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
             <input class="bg-blue-300 ml-2 p-2 px-6 rounded" type="submit" value="Search">
           </div>
         </div>
@@ -66,7 +61,7 @@
       </div>
     </div>
   </div>
-@endsection
+
 
 
 <div id="editModal" class="fixed inset-0 bg-black/50 hidden justify-center items-center z-50">
@@ -109,7 +104,7 @@
     </form>
   </div>
 </div>
-
+@endsection
 
 
 @section('script')
