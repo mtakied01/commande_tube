@@ -42,7 +42,7 @@
             @php
               $hours = intval(Carbon\Carbon::parse($order->created_at)->diffInHours(now(), true));
             @endphp
-            <tr class="{{ $hours >= 2 ? 'bg-red-700' : '' }}" onclick="editDescription({{ $order->tube_id }}, '{{ $order->serial_cmd }}', '{{ $order->description }}')">
+            <tr class="{{ $hours >= 2 ? 'bg-red-700' : '' }}" onclick="editDescription({{ $order->tube_id }}, `{{ $order->serial_cmd }}`, `{{ $order->description }}`)">
               <td class="px-4 py-2">{!! App\Models\tube::find($order->tube_id)->dpn !!}</td>
               <td class="px-4 py-2">{{ $order->quantity }}</td>
               <td class="px-4 py-2">{!! App\Models\commande::find($order->serial_cmd)->user->matricule !!}</td>
@@ -72,7 +72,7 @@
   <script>
     function editDescription(tubeId, commandeId, currentDescription) {
   const newDescription = prompt("Edit the description:", currentDescription);
-  if (newDescription !== null && newDescription !== currentDescription) {
+  if (newDescription !== currentDescription) {
     fetch(`/update-description/${tubeId}/${commandeId}`, {
       method: 'POST',
       headers: {

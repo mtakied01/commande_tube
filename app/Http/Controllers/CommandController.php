@@ -201,7 +201,7 @@ class CommandController extends Controller
         LigneCommande::
             where('tube_id', $tube_id)
             ->where('serial_cmd', $commande_id)
-            ->update(['description' => $request->description]);
+            ->update(['description' => $request->description ?? '']);
 
         return response()->json(['status' => 'success']);
     }
