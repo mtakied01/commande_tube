@@ -134,7 +134,7 @@
       if (e.code === 'Enter') {
         if (apnInput.value.trim().startsWith('1P')) {
           currentAPN = apnInput.value.trim().slice(2);
-        }else{
+        } else {
           currentAPN = apnInput.value.trim();
         }
         serialInput.focus();
@@ -154,15 +154,19 @@
             const response = await fetch('/api/check-product', {
               method: 'POST',
               headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
               },
               body: JSON.stringify({
-          serial_cmd: serialCmd,
-          apn: currentAPN,
-          serial_product: serialProduct
+                serial_cmd: serialCmd,
+                apn: currentAPN,
+                serial_product: serialProduct
               })
             });
+            apnInput.value = '';
+            serialInput.value = '';
+            apnInput.focus();
+
 
             const data = await response.json();
 
@@ -174,10 +178,8 @@
               alert('Produit non valide ou déjà scanné');
             }
 
-            apnInput.value = '';
-            serialInput.value = '';
+            
             currentAPN = '';
-            apnInput.focus();
           } catch (error) {
             alert('Erreur de vérification');
           }
@@ -190,7 +192,8 @@
       scannedApnSeries.forEach((serials, apn) => {
         const div = document.createElement('div');
         div.className = "p-2 bg-gray-100 rounded w-full max-w-3xl text-center";
-        div.innerHTML = `<strong>${apn}</strong>: <span class="text-gray-700">(${serials.size} produits scannés)</span>`;
+        div.innerHTML =
+          `<strong>${apn}</strong>: <span class="text-gray-700">(${serials.size} produits scannés)</span>`;
         scannedList.appendChild(div);
       });
     }
@@ -207,24 +210,24 @@
       (async () => {
         try {
           const response = await fetch('/validate-products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-          serial_cmd: serialCmd,
-          products
-        })
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+              serial_cmd: serialCmd,
+              products
+            })
           });
 
           const data = await response.json();
 
           if (data.success) {
-        alert("Validation réussie !");
-        location.reload();
+            alert("Validation réussie !");
+            location.reload();
           } else {
-        alert("Erreur lors de la validation.");
+            alert("Erreur lors de la validation.");
           }
         } catch (error) {
           alert("Une erreur s'est produite lors de la validation.");
