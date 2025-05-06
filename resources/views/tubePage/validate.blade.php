@@ -149,20 +149,23 @@
           return;
         }
 
-        fetch('/check-product', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({
-              serial_cmd: serialCmd,
-              apn: currentAPN,
-              serial_product: serialProduct
-            })
-          })
-          .then(res => res.json())
-          .then(data => {
+        (async () => {
+          try {
+            const response = await fetch('/api/check-product', {
+              method: 'POST',
+              headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+              },
+              body: JSON.stringify({
+          serial_cmd: serialCmd,
+          apn: currentAPN,
+          serial_product: serialProduct
+              })
+            });
+
+            const data = await response.json();
+
             if (data.valid) {
               if (!scannedApnSeries.has(currentAPN)) scannedApnSeries.set(currentAPN, new Set());
               scannedApnSeries.get(currentAPN).add(serialProduct);
@@ -175,8 +178,10 @@
             serialInput.value = '';
             currentAPN = '';
             apnInput.focus();
-          })
-          .catch(() => alert('Erreur de vérification'));
+          } catch (error) {
+            alert('Erreur de vérification');
+          }
+        })();
       }
     });
 
@@ -199,26 +204,32 @@
         serials: Array.from(serials)
       }));
 
-      fetch('/validate-products', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-          },
-          body: JSON.stringify({
-            serial_cmd: serialCmd,
-            products
-          })
+      (async () => {
+        try {
+          const response = await fetch('/validate-products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+          serial_cmd: serialCmd,
+          products
         })
-        .then(res => res.json())
-        .then(response => {
-          if (response.success) {
-            alert("Validation réussie !");
-            location.reload();
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+        alert("Validation réussie !");
+        location.reload();
           } else {
-            alert("Erreur lors de la validation.");
+        alert("Erreur lors de la validation.");
           }
-        });
+        } catch (error) {
+          alert("Une erreur s'est produite lors de la validation.");
+        }
+      })();
     };
 
     // scannedList.appendChild(validateBtn);

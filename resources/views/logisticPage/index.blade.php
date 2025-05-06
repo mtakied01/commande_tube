@@ -73,25 +73,27 @@
     function editDescription(tubeId, commandeId, currentDescription) {
   const newDescription = prompt("Edit the description:", currentDescription);
   if (newDescription !== currentDescription) {
-    fetch(`/update-description/${tubeId}/${commandeId}`, {
-      method: 'POST',
-      headers: {
+    (async () => {
+      try {
+      const response = await fetch(`/update-description/${tubeId}/${commandeId}`, {
+        method: 'POST',
+        headers: {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      },
-      body: JSON.stringify({ description: newDescription })
-    })
-    .then(response => {
+        },
+        body: JSON.stringify({ description: newDescription })
+      });
+
       if (response.ok) {
         location.reload();
       } else {
         alert("Failed to update the description.");
       }
-    })
-    .catch(error => {
+      } catch (error) {
       console.error("Error:", error);
       alert("An error occurred while updating the description.");
-    });
+      }
+    })();
   }
 }
 

@@ -99,6 +99,7 @@
           e.preventDefault();
 
           let value = e.target.value.trim();
+          e.target.value = ''
           if (value.toLowerCase().startsWith('1p')) {
             value = value.slice(2);
           }
@@ -114,19 +115,16 @@
             return;
           }
 
-          fetch('/check', {
-              method: 'POST',
-              headers: {
-                'Content-type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-              },
-              body: JSON.stringify({
-                value: value
-              })
-            })
-            .then(res => res.json())
-            .then(response => {
-              if (response.exist) {
+
+          // async
+          async function checkAndAddRow(value, key, table1, e) {
+            try {
+              const response = await fetch(`/api/check?value=${encodeURIComponent(value)}`, {
+                method: 'GET'
+              });
+              const data = await response.json();
+
+              if (data.exists) {
                 const row = table1.getElementsByTagName('tbody')[0].insertRow(key);
 
                 const col1 = row.insertCell(0);
@@ -136,7 +134,6 @@
                 col1.textContent = value;
                 col1.classList.add("px-4", "py-3", "text-3xl");
 
-
                 const quantityWrapper = document.createElement('div');
                 quantityWrapper.classList.add('flex', 'items-center', 'gap-2');
 
@@ -144,57 +141,68 @@
                   const button = document.createElement('button');
                   button.textContent = i;
                   button.classList.add('px-4', 'py-1', 'bg-gray-200', 'text-xl', 'rounded',
-                    'hover:bg-gray-300');
+                  'hover:bg-gray-300');
+
                   button.addEventListener('click', (e) => {
                     quantityWrapper.querySelectorAll('button').forEach(btn => {
                       btn.classList.remove('border', 'border-2', 'border-indigo-500');
                     });
                     button.classList.add('border', 'border-2', 'border-indigo-500');
                     e.preventDefault();
-                    const input = quantityWrapper.querySelector('input');
+
+                    let input = quantityWrapper.querySelector('input');
                     if (!input) {
-                      const quantityInput = document.createElement('input');
-                      quantityInput.type = 'text';
-                      quantityInput.value = i;
-                      quantityInput.readOnly = true;
-                      quantityInput.classList.add('hidden');
-                      quantityWrapper.appendChild(quantityInput);
+                      input = document.createElement('input');
+                      input.type = 'text';
+                      input.value = i;
+                      input.readOnly = true;
+                      input.classList.add('hidden');
+                      quantityWrapper.appendChild(input);
                     } else {
                       input.value = i;
                     }
                   });
+
                   quantityWrapper.appendChild(button);
                 }
 
                 col2.appendChild(quantityWrapper);
-
-
                 e.target.value = '';
 
                 const btn = document.createElement('button');
                 btn.id = key;
                 btn.textContent = '❌';
-                btn.classList.add('px-3', 'py-2', 'cursor-pointer', 'text-xl')
+                btn.classList.add('px-3', 'py-2', 'cursor-pointer', 'text-xl');
                 btn.addEventListener('click', (e) => {
                   deleteRow(e.target);
                   key--;
-                  if (table1.querySelector('tbody').rows.length == 0) {
-                    table1.classList.add('hidden')
+                  if (table1.querySelector('tbody').rows.length === 0) {
+                    table1.classList.add('hidden');
                   } else {
-                    table1.classList.remove('hidden')
+                    table1.classList.remove('hidden');
                   }
                 });
+
                 col3.appendChild(btn);
                 key++;
 
-                if (table1.querySelector('tbody').rows.length == 0) {
-                  table1.classList.add('hidden')
+                if (table1.querySelector('tbody').rows.length === 0) {
+                  table1.classList.add('hidden');
                 } else {
-                  table1.classList.remove('hidden')
+                  table1.classList.remove('hidden');
                 }
-                e.preventDefault()
+
+                e.preventDefault();
               }
-            })
+
+            } catch (error) {
+              console.error('Error fetching tube data:', error);
+            }
+          }
+
+
+          checkAndAddRow(value, key, table1, e);
+
 
           // // // // // // // // // // 
 
@@ -227,21 +235,22 @@
 
 
 
-        fetch('/tube', {
-            method: 'POST',
-            headers: {
-              'Content-type': 'application/json',
-              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify(data)
-          })
-          .then(res => res.json())
-          .then(response => {
-            console.log('Réponse serveur:', response);
-          })
-          .catch(error => {
+        (async () => {
+          try {
+            const response = await fetch('/tube', {
+              method: 'POST',
+              headers: {
+          'Content-type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+              },
+              body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            console.log('Réponse serveur:', result);
+          } catch (error) {
             console.error(error);
-          });
+          }
+        })();
 
 
 

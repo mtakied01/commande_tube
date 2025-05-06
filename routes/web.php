@@ -32,8 +32,8 @@ Route::get('/dash',[historicDashboard::class,'index'])->name('admin.history');
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-Route::post('/check',[testController::class,'check']);
-Route::post('/check-product', [CommandController::class, 'checkProduct']);
+// Route::post('/check',[testController::class,'check']);
+// Route::post('/check-product', [CommandController::class, 'checkProduct']);
 Route::post('/validate-products', [CommandController::class, 'validateProducts']);
 Route::post('/apn',[administrationController::class,'addApn'])->name('apn.create');
 Route::post('/rack',[administrationController::class,'searchRack'])->name('admin.searchRack');
